@@ -18,7 +18,7 @@ void setup() {
 
 //Set up Temp sensor - I am only using 1 sensor here, but you could have more
   if ( !ds.search(addr)) {
-    Serial.println(F("---> ERROR: Did not find the DS18B20 Water Temperature Sensor!"));
+    Serial.println(F("---> ERROR: Did not find the DS18B20 Temperature Sensor!"));
     return;
   }
   else {
