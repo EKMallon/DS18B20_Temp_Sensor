@@ -16,7 +16,7 @@ float DS18B20float;
 void setup() {
   Serial.begin(9600);
 
-//Set up Temp sensor - I am only using 1 sensor here, but you could have more
+  //Set up Temp sensor - I am only using 1 sensor here, but you could have more
   if ( !ds.search(addr)) {
     Serial.println(F("---> ERROR: Did not find the DS18B20 Temperature Sensor!"));
     return;
@@ -34,27 +34,27 @@ void setup() {
 
 void loop() {
 
-    DS18B20float = getTemp();
-    Serial.print(F("FLOAT temp in celcius: "));
-    Serial.println(DS18B20float);
-    //if you read the registers before the conversion is complete it will give the default "85" value
-    delay (200);
+  DS18B20float = getTemp();
+  Serial.print(F("FLOAT temp in celcius: "));
+  Serial.println(DS18B20float);
+  //if you read the registers before the conversion is complete it will give the default "85" value
+  delay (200);
 }
 
 // watchdog interrupt
 ISR (WDT_vect) 
 {
-   wdt_disable();  // disable watchdog
+  wdt_disable();  // disable watchdog
 }  // end of WDT_vect
 
 // this returns the temperature from one DS18S20 in DEG Celsius using 12 bit conversion
 float getTemp(){  
- //byte data[12];
- byte data[2];
- ds.reset();
- ds.select(addr);
- ds.write(0x44); // start conversion, read temperature and store it in the scratchpad 
- 
+  //byte data[12];
+  byte data[2];
+  ds.reset();
+  ds.select(addr);
+  ds.write(0x44); // start conversion, read temperature and store it in the scratchpad 
+
   //this next bit creates a 1 second WDT delay for the DS18b20 temp conversion 
   //The time needed between the CONVERT_T command and the READ_SCRATCHPAD command has to be at least 
   //750 millisecs (can be shorter if using a D18B20 type with resolutions < 12 bits)
@@ -69,18 +69,19 @@ float getTemp(){
   sleep_cpu ();    
   // cancel sleep as a precaution
   sleep_disable();
-  
- byte present = ds.reset(); 
- ds.select(addr);  
- ds.write(0xBE); // Read Scratchpad
- for (int i = 0; i < 2; i++) { // we read 9 bytes? but you only use two of them?
-  data[i] = ds.read();
- }
- byte MSB = data[1];
- byte LSB = data[0];
- float tempRead = ((MSB << 8) | LSB); //using two's compliment
- float TemperatureSum = tempRead / 16; 
- return TemperatureSum;
- 
+
+  byte present = ds.reset(); 
+  ds.select(addr);  
+  ds.write(0xBE); // Read Scratchpad
+  for (int i = 0; i < 2; i++) { // we read 9 bytes? but you only use two of them?
+    data[i] = ds.read();
+  }
+  byte MSB = data[1];
+  byte LSB = data[0];
+  float tempRead = ((MSB << 8) | LSB); //using two's compliment
+  float TemperatureSum = tempRead / 16; 
+  return TemperatureSum;
+
 }
+
 
